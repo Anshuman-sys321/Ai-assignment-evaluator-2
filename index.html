@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Assignment Evaluator - GIET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(17, 17, 17, 0.9);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeInScale 0.6s ease-out;
+        }
+
+        /* --- LOGO BORDER ANIMATION --- */
+        .logo-wrapper {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 0 auto 25px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The Animated Rotating Border */
+        .logo-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(0deg, transparent 0%, #00c6ff 50%, #00ff95 100%);
+            animation: rotateBorder 3s linear infinite;
+        }
+
+        /* Inner white circle for the logo */
+        .logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .logo-container img {
+            width: 85%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        @keyframes rotateBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* --- END LOGO ANIMATION --- */
+
+        h1 {
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            letter-spacing: 1px;
+            background: linear-gradient(to right, #667eea, #764ba2, #00c6ff);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shineText 3s linear infinite;
+        }
+
+        .role-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            background: #222;
+            border-radius: 30px;
+            padding: 5px;
+        }
+
+        .role-buttons button {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 30px;
+            background: transparent;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .role-buttons button.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 25px;
+            border: 1px solid #333;
+            background: #222;
+            color: #fff;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #00c6ff;
+            background: #2a2a2a;
+            transform: translateY(-2px);
+        }
+
+        /* Button Hover Effects */
+        button.submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #667eea, #764ba2, #667eea);
+            background-size: 200% auto;
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: 0.5s;
+        }
+
+        button.submit-btn:hover {
+            background-position: right center;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.5);
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            min-height: 20px;
+        }
+
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        .footer-text {
+            margin-top: 20px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="logo-wrapper">
+        <div class="logo-border"></div>
+        <div class="logo-container">
+            <img src="giet.logo.png" alt="GIET Logo">
+        </div>
+    </div>
+
+    <h1>AI Assignment Evaluator</h1>
+
+    <div class="role-buttons">
+        <button id="studentBtn" class="active" onclick="setRole('student')">Student</button>
+        <button id="teacherBtn" onclick="setRole('teacher')">Teacher</button>
+    </div>
+
+    <form onsubmit="handleLogin(event)">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button class="submit-btn" type="submit">Secure Login</button>
+    </form>
+
+    <p class="message" id="message"></p>
+    
+    <div class="footer-text">GIET University, Gunupur</div>
+</div>
+
+<script>
+    const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    let selectedRole = "student";
+
+    function setRole(role){
+        selectedRole = role;
+        document.getElementById("studentBtn").classList.toggle("active", role === 'student');
+        document.getElementById("teacherBtn").classList.toggle("active", role === 'teacher');
+    }
+
+    async function handleLogin(e){
+        e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+        const message = document.getElementById("message");
+
+        message.style.color = "#aaa";
+        message.innerText = "Authenticating...";
+
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if(error) throw error;
+
+            const { data: profile, error: profileError } = await supabaseClient
+                .from("profiles").select("role").eq("id", data.user.id).single();
+
+            if(profileError || !profile) throw new Error("Profile error.");
+
+            if(profile.role !== selectedRole) {
+                message.style.color = "#ff6b6b";
+                message.innerText = `Invalid role for this account.`;
+                await supabaseClient.auth.signOut();
+                return;
+            }
+
+            message.style.color = "#00ff95";
+            message.innerText = "Access granted. Redirecting...";
+            
+            setTimeout(() => {
+                window.location.href = selectedRole === "student" ? "afterstudentlogin.html" : "afterteacherlogin.html";
+            }, 1000);
+
+        } catch (err) {
+            message.style.color = "#ff6b6b";
+            message.innerText = err.message;
+        }
+    }
+</script>
+
+</body>
+</html>
