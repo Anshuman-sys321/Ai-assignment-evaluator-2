@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard - GIET</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="student.css">
+
+    <style>
+        .main-content {
+            transition: margin-left 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding: 20px;
+        }
+        .sidebar.active ~ .main-content {
+            margin-left: 280px;
+        }
+        .dashboard-section {
+            display: none;
+            animation: slideUpFade 0.5s ease;
+        }
+        .dashboard-section.active {
+            display: block;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+        }
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #studentRank {
+            font-size: 48px;
+            color: #00ff95;
+            text-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <nav class="sidebar" id="sidebar">
+        <div style="text-align: center; padding: 20px;">
+            <img src="giet.logo.png" alt="Logo" style="width: 80px; background: white; border-radius: 50%; padding: 5px;">
+        </div>
+        <a href="#" onclick="showSection('home')">🏠 Home Dashboard</a>
+        <a href="#" onclick="showSection('assignments')">📝 Submit Assignment</a>
+        <a href="#" onclick="showSection('performance')">📈 Performance Graph</a>
+        <a href="#" class="logout-link" onclick="logout()">🚪 Logout</a>
+    </nav>
+
+    <div class="navbar">
+        <div class="nav-header">
+            <span class="menu-icon" onclick="toggleSidebar()">☰</span>
+            <span>📚 Student Dashboard</span>
+        </div>
+        <div id="userNameDisplay" style="font-size: 0.9rem; color: #00c6ff;"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="container">
+            
+            <section id="home" class="dashboard-section active">
+                <div class="stats">
+                    <div class="stat-box">
+                        <h3>Attendance</h3>
+                        <div class="progress-ring">
+                            <svg width="120" height="120">
+                                <circle cx="60" cy="60" r="50" stroke="#333" stroke-width="10" fill="none"/>
+                                <circle id="ringProgress" cx="60" cy="60" r="50" stroke="#00ff95" stroke-width="10" fill="none" 
+                                        stroke-dasharray="314" stroke-dashoffset="314" stroke-linecap="round" 
+                                        transform="rotate(-90 60 60)"/>
+                            </svg>
+                            <span id="attendancePercent">0%</span>
+                        </div>
+                    </div>
+                    <div class="stat-box">
+                        <h3>Your Academic Rank</h3>
+                        <p id="studentRank">#--</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Quick Sync</h2>
+                    <p style="margin-bottom:10px; color:#aaa;">Enter your name to load your data.</p>
+                    <input type="text" id="studentName" placeholder="Enter Registered Name">
+                </div>
+            </section>
+
+            <section id="assignments" class="dashboard-section">
+                <div class="card">
+                    <h2>Submit Math Assignment</h2>
+                    <input type="text" id="assignmentTitle" placeholder="Assignment Title">
+                    <input type="date" id="submissionDate">
+                    <p style="font-size: 0.8rem; margin-bottom: 5px;">Upload PDF:</p>
+                    <input type="file" id="assignmentFile" accept="application/pdf">
+                    <button onclick="submitAssignment()" id="submitBtn">Submit for AI Review</button>
+                    <p id="submitMessage" style="margin-top:15px; text-align:center;"></p>
+                </div>
+            </section>
+
+            <section id="performance" class="dashboard-section">
+                <div class="card">
+                    <h2>Performance Analytics</h2>
+                    <p style="margin-bottom:15px; color:#aaa;">Graph updates automatically as assignments are graded.</p>
+                    <button onclick="showPerformance()">Generate/Refresh Graph</button>
+                    <canvas id="performanceChart" height="150"></canvas>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script>
+        const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+        let performanceChart = null;
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.dashboard-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+            toggleSidebar();
+        }
+
+        document.getElementById("studentName").addEventListener("input", (e) => {
+            const name = e.target.value;
+            document.getElementById("userNameDisplay").innerText = name ? "Logged in as: " + name : "";
+            loadAttendance();
+            loadRank();
+        });
+
+        async function loadAttendance(){
+            const name = document.getElementById("studentName").value.trim();
+            if(!name) return;
+            const { data } = await supabaseClient.from("attendance").select("*").eq("student_name", name);
+            if(!data || data.length === 0){ updateRing(0); return; }
+            const total = data.length;
+            const present = data.filter(d => d.present).length;
+            updateRing((present/total) * 100);
+        }
+
+        function updateRing(percent){
+            const circle = document.getElementById("ringProgress");
+            const circumference = 314;
+            const offset = circumference - (percent/100) * circumference;
+            circle.style.strokeDashoffset = offset;
+            document.getElementById("attendancePercent").innerText = percent.toFixed(0) + "%";
+        }
+
+        async function submitAssignment(){
+            const name = document.getElementById("studentName").value.trim();
+            const title = document.getElementById("assignmentTitle").value.trim();
+            const date = document.getElementById("submissionDate").value;
+            const file = document.getElementById("assignmentFile").files[0];
+
+            if(!name || !title || !date || !file){
+                alert("Please fill all fields and sync your name first.");
+                return;
+            }
+
+            const fileName = Date.now() + "-" + file.name;
+            const { error: uploadError } = await supabaseClient.storage.from("assignments").upload(fileName, file);
+
+            if(uploadError){ alert("Upload failed"); return; }
+
+            const { data: publicData } = supabaseClient.storage.from("assignments").getPublicUrl(fileName);
+            const fileUrl = publicData.publicUrl;
+
+            const { data: inserted, error: insertError } = await supabaseClient.from("assignments").insert([{
+                student_name: name, subject: "Math", title: title, submission_date: date, file_url: fileUrl, status: "Evaluating"
+            }]).select();
+
+            if(insertError) return;
+
+            document.getElementById("submitMessage").innerText = "AI is evaluating...";
+
+            try {
+                const response = await fetch("https://dezrvgfkzwdpdzztbiyo.functions.supabase.co/compare-math", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", "apikey": supabaseKey, "Authorization": "Bearer " + supabaseKey },
+                    body: JSON.stringify({ fileUrl: fileUrl, modelAnswer: "2+2=4\n5+5=10\n10-2=8" })
+                });
+
+                const result = await response.json();
+                await supabaseClient.from("assignments").update({
+                    status: "Checked", ai_remark: result.remark, total_marks: result.score || 0
+                }).eq("id", inserted[0].id);
+
+                document.getElementById("submitMessage").innerText = "AI Result: " + result.remark;
+                loadRank();
+            } catch {
+                document.getElementById("submitMessage").innerText = "Submission stored. AI result pending.";
+            }
+        }
+
+        /* FIXED PERFORMANCE GRAPH LOGIC */
+        async function showPerformance(){
+            const name = document.getElementById("studentName").value.trim();
+            if(!name){ alert("Enter your name in the Home tab first!"); return; }
+
+            const { data } = await supabaseClient
+                .from("assignments")
+                .select("title, total_marks")
+                .eq("student_name", name)
+                .not("total_marks", "is", null)
+                .order("submission_date", { ascending: true });
+
+            if(!data || data.length === 0){
+                alert("No graded assignments found.");
+                return;
+            }
+
+            // Using the actual Assignment Title from database instead of index i+1
+            const labels = data.map(s => s.title); 
+            const scores = data.map(s => s.total_marks);
+
+            const ctx = document.getElementById("performanceChart").getContext("2d");
+            if(performanceChart) performanceChart.destroy();
+
+            performanceChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels: labels,
+                    datasets: [{ 
+                        label: "Marks Obtained", 
+                        data: scores, 
+                        backgroundColor: "rgba(0, 198, 255, 0.6)",
+                        borderColor: "#00c6ff",
+                        borderWidth: 1 
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    scales: { 
+                        y: { beginAtZero: true, max: 100, ticks: { color: "white" } },
+                        x: { ticks: { color: "white" } }
+                    },
+                    plugins: {
+                        legend: { labels: { color: "white" } }
+                    }
+                }
+            });
+        }
+
+        async function loadRank(){
+            const { data } = await supabaseClient.from("assignments").select("*");
+            if(!data) return;
+            let scores = {};
+            data.forEach(s => {
+                if(s.total_marks !== null){
+                    if(!scores[s.student_name]) scores[s.student_name] = [];
+                    scores[s.student_name].push(s.total_marks);
+                }
+            });
+            let averages = Object.keys(scores).map(name => {
+                let avg = scores[name].reduce((a, b) => a + b) / scores[name].length;
+                return { name, avg };
+            });
+            averages.sort((a, b) => b.avg - a.avg);
+            const currentName = document.getElementById("studentName").value;
+            let rank = averages.findIndex(s => s.name === currentName);
+            document.getElementById("studentRank").innerText = rank >= 0 ? "#" + (rank + 1) : "#--";
+        }
+
+        async function logout(){
+            await supabaseClient.auth.signOut();
+            window.location.href = "loginpage.html";
+        }
+    </script>
+</body>
+</html>

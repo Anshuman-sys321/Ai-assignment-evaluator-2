@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teacher Dashboard</title>
+<link rel="stylesheet" href="teacher.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div class="logo">👩‍🏫 <span>Teacher Dashboard</span></div>
+    <div class="top-actions">
+        <button onclick="toggleTheme()">🌙</button>
+        <button onclick="logout()"
+        style="background:#ff4d4d;color:white;padding:8px 15px;
+        border:none;border-radius:8px;cursor:pointer;font-weight:bold;">
+        Logout</button>
+    </div>
+</div>
+
+<!-- CLASS SUMMARY -->
+<div class="container">
+<h2>📊 Class Summary</h2>
+<p>Total Students: <span id="totalStudents">0</span></p>
+<p>Average Score: <span id="classAverage">0</span></p>
+</div>
+
+<!-- ATTENDANCE -->
+<div class="container">
+<h2>📘 Attendance</h2>
+
+<input type="text" id="newStudentName" placeholder="Enter Student Name">
+<button onclick="addStudent()">➕ Add Student</button>
+<button onclick="saveAttendance()">💾 Save Attendance</button>
+
+<table id="attendanceTable" style="margin-top:20px;width:100%;">
+<thead>
+<tr>
+<th>Name</th>
+<th>Present Today</th>
+<th>Attendance %</th>
+<th>Remove</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+<!-- ASSIGNMENTS -->
+<div class="container">
+<h2>📝 Assignment Evaluations</h2>
+<div id="classList"></div>
+
+<h3>🏆 Top Performers</h3>
+<div id="leaderboard"></div>
+</div>
+
+<script>
+
+/* ================= SUPABASE CONFIG ================= */
+
+const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+/* ================= ATTENDANCE SYSTEM ================= */
+
+let students = [];
+
+async function loadAttendance(){
+
+    const { data, error } =
+    await supabaseClient
+    .from("attendance")
+    .select("*");
+
+    if(error) return;
+
+    if(!data) return;
+
+    const uniqueStudents =
+    [...new Set(data.map(s => s.student_name))];
+
+    students = uniqueStudents.map(name => {
+
+        const studentRecords =
+        data.filter(s => s.student_name === name);
+
+        const totalDays = studentRecords.length;
+        const presentDays =
+        studentRecords.filter(s => s.present).length;
+
+        const percentage =
+        totalDays > 0
+        ? ((presentDays / totalDays) * 100).toFixed(1)
+        : 0;
+
+        return {
+            name,
+            presentToday:false,
+            percentage
+        };
+    });
+
+    renderAttendance();
+}
+
+function renderAttendance(){
+
+    const tbody =
+    document.querySelector("#attendanceTable tbody");
+
+    tbody.innerHTML = "";
+
+    students.forEach((student,index)=>{
+
+        const row =
+        document.createElement("tr");
+
+        row.innerHTML = `
+        <td>${student.name}</td>
+        <td>
+            <input type="checkbox"
+            ${student.presentToday ? "checked":""}
+            onchange="togglePresent(${index})">
+        </td>
+        <td>${student.percentage}%</td>
+        <td>
+            <button onclick="removeStudent(${index})">
+            ❌
+            </button>
+        </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+}
+
+function addStudent(){
+
+    const name =
+    document.getElementById("newStudentName")
+    .value.trim();
+
+    if(!name) return;
+
+    students.push({
+        name,
+        presentToday:false,
+        percentage:0
+    });
+
+    document.getElementById("newStudentName").value="";
+    renderAttendance();
+}
+
+function togglePresent(index){
+    students[index].presentToday =
+    !students[index].presentToday;
+}
+
+function removeStudent(index){
+    students.splice(index,1);
+    renderAttendance();
+}
+
+async function saveAttendance(){
+
+    const today =
+    new Date().toISOString().split("T")[0];
+
+    for(const student of students){
+
+        await supabaseClient
+        .from("attendance")
+        .upsert([{
+            student_name:student.name,
+            date:today,
+            present:student.presentToday
+        }],
+        {onConflict:["student_name","date"]});
+    }
+
+    alert("Attendance Saved");
+    loadAttendance();
+}
+
+/* ================= ASSIGNMENTS ================= */
+
+async function loadDashboard(){
+
+const { data: submissions } =
+await supabaseClient
+.from("assignments")
+.select("*")
+.order("created_at",{ascending:false});
+
+let container =
+document.getElementById("classList");
+container.innerHTML="";
+
+if(!submissions || submissions.length===0){
+container.innerHTML="<h3>No submissions found.</h3>";
+return;
+}
+
+submissions.forEach(sub=>{
+let box=document.createElement("div");
+box.style.marginBottom="15px";
+box.innerHTML=`
+<strong>👤 ${sub.student_name}</strong><br>
+${sub.subject} - ${sub.title}<br>
+<b>Marks:</b> ${sub.total_marks ?? "Pending"}<br>
+<b>Status:</b> ${sub.status ?? "Pending"}<br>
+<button onclick="window.open('${sub.file_url}')">
+View PDF</button>
+`;
+container.appendChild(box);
+});
+}
+
+/* ================= CLASS SUMMARY ================= */
+
+async function loadClassSummary(){
+
+const { data: submissions } =
+await supabaseClient
+.from("assignments")
+.select("*");
+
+if(!submissions) return;
+
+const uniqueStudents =
+[...new Set(submissions.map(s=>s.student_name))];
+
+document.getElementById("totalStudents").innerText =
+uniqueStudents.length;
+
+let graded =
+submissions.filter(s=>s.total_marks!==null);
+
+if(graded.length>0){
+let avg=
+graded.reduce((a,b)=>a+b.total_marks,0)/
+graded.length;
+
+document.getElementById("classAverage").innerText=
+avg.toFixed(1)+" / 100";
+}
+}
+
+/* ================= LEADERBOARD ================= */
+
+async function loadLeaderboard(){
+
+const { data: submissions } =
+await supabaseClient
+.from("assignments")
+.select("*");
+
+let studentScores={};
+
+submissions.forEach(sub=>{
+if(sub.total_marks!==null){
+if(!studentScores[sub.student_name])
+studentScores[sub.student_name]=[];
+studentScores[sub.student_name]
+.push(sub.total_marks);
+}
+});
+
+let averages=Object.keys(studentScores)
+.map(name=>{
+let avg=
+studentScores[name]
+.reduce((a,b)=>a+b)/
+studentScores[name].length;
+return {name,avg};
+});
+
+averages.sort((a,b)=>b.avg-a.avg);
+
+let leaderboard=document.getElementById("leaderboard");
+leaderboard.innerHTML="";
+
+averages.slice(0,3).forEach((student,index)=>{
+leaderboard.innerHTML+=`
+<div style="margin-bottom:8px;">
+🏅 #${index+1} ${student.name} - ${student.avg.toFixed(1)}
+</div>`;
+});
+}
+
+/* ================= UI ================= */
+
+function toggleTheme(){
+document.body.classList.toggle("light-mode");
+}
+
+function logout(){
+window.location.href="loginpage.html";
+}
+
+/* ================= INITIAL LOAD ================= */
+
+loadAttendance();
+loadDashboard();
+loadClassSummary();
+loadLeaderboard();
+
+</script>
+
+</body>
+</html>

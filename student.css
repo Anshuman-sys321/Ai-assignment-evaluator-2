@@ -1,0 +1,276 @@
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    min-height:100vh;
+    color:white;
+}
+
+.navbar{
+    background:rgba(255,255,255,0.08);
+    backdrop-filter:blur(12px);
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+}
+
+.menu-btn{cursor:pointer;}
+
+/* Enhanced Glassmorphic Sidebar */
+.sidebar {
+    width: 280px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    position: fixed;
+    left: -280px; /* Hidden by default */
+    top: 0;
+    height: 100%;
+    z-index: 1000;
+    padding-top: 80px;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    /* The "Best" Animation: Elastic transition */
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar.active {
+    transform: translateX(280px); /* Slides into view */
+}
+
+/* Sidebar Links with Interaction */
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 1.1rem;
+    margin: 8px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.sidebar a:hover {
+    background: rgba(0, 198, 255, 0.15);
+    color: #00c6ff;
+    padding-left: 35px; /* Slight push to the right */
+    border-left: 4px solid #00c6ff;
+}
+
+/* Logout link special style */
+.sidebar a.logout-link {
+    margin-top: 50px;
+    color: #ff4d4d;
+}
+
+.sidebar a.logout-link:hover {
+    background: rgba(255, 77, 77, 0.1);
+    border-left-color: #ff4d4d;
+}
+
+/* Sidebar Overlay (Darkens background when sidebar is open) */
+#sidebarOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.4s;
+    z-index: 999;
+}
+
+#sidebarOverlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.container{
+    padding:40px;
+    max-width:800px; 
+    margin:0 auto;
+    display:flex;    
+    flex-direction:column;
+    gap:30px;
+}
+
+
+.card{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(16px);
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 50px rgba(0,0,0,0.4);
+    transition:0.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+}
+
+input,select{
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #444;
+    background:#1c1c1c;
+    color:white;
+}
+
+button{
+    padding:10px;
+    width:100%;
+    border:none;
+    background:linear-gradient(90deg,#00c6ff,#00ff95);
+    color:black;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.hidden{display:none;}
+
+canvas{
+    margin-top:20px;
+    background:rgba(255,255,255,0.05);
+    padding:10px;
+    border-radius:12px;
+}
+.stats{
+    grid-column: span 2;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.stat-box{
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:15px;
+    text-align:center;
+    backdrop-filter:blur(12px);
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    transition:0.3s;
+}
+
+.stat-box:hover{
+    transform:translateY(-5px);
+}
+
+.stat-box h3{
+    font-size:14px;
+    color:#aaa;
+    margin-bottom:10px;
+}
+
+.stat-box p{
+    font-size:28px;
+    font-weight:bold;
+    color:#00ff95;
+}
+.progress-ring{
+    position:relative;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+.progress-ring span{
+    position:absolute;
+    font-size:22px;
+    font-weight:bold;
+}
+#ringProgress{
+    transition: stroke-dashoffset 1.2s ease;
+}
+
+.light-mode{
+    background:#f5f5f5;
+    color:#111;
+}
+
+.light-mode .card,
+.light-mode .stat-box{
+    background:white;
+    color:#111;
+}
+@media(max-width:900px){
+    .container{
+        grid-template-columns:1fr;
+    }
+}
+
+/* Enhanced Button Animations */
+button {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: translateY(0) scale(0.96);
+}
+
+/* Specific Gradient Button Pulse */
+#saveBtn, #addStudentBtn, .login-form button {
+    animation: pulseGlow 3s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 149, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 149, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 149, 0); }
+}
+
+
+.card:hover, .stat-box:hover, .student-card:hover {
+    border: 1px solid rgba(0, 198, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.01);
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fix for .hidden class to support animation */
+.hidden {
+    display: none !important;
+}
+
+input, select, textarea {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #00c6ff;
+    background: #252525;
+    box-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
+    transform: scale(1.01);
+}

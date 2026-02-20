@@ -1,0 +1,307 @@
+
+/* ====== DARK ATTENDANCE THEME (KEPT) ====== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    min-height:100vh;
+    padding:30px;
+    color:#fff;
+}
+
+.navbar{
+    font-size:24px;
+    font-weight:bold;
+    margin-bottom:25px;
+}
+/* ===== TOPBAR ===== */
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo span{
+    font-weight:500;
+}
+
+.top-actions{
+    display:flex;
+    gap:15px;
+}
+
+.theme-btn{
+    background:rgba(255,255,255,0.1);
+    color:white;
+    border:1px solid rgba(255,255,255,0.2);
+    padding:8px 14px;
+}
+
+.theme-btn:hover{
+    background:rgba(0,198,255,0.2);
+}
+
+.container{
+    background:rgba(255,255,255,0.06);
+    backdrop-filter:blur(25px);
+    border-radius:16px;
+    border:1px solid rgba(255,255,255,0.08);
+    padding:30px;
+    box-shadow:0 15px 50px rgba(0,0,0,0.5);
+    margin-bottom:35px;
+}
+
+
+/* ====== ATTENDANCE ====== */
+
+header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:20px;
+}
+
+#searchStudent{
+    padding:8px 12px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+}
+
+button{
+    padding:10px 16px;
+    border-radius:10px;
+    border:none;
+    cursor:pointer;
+    font-weight:600;
+    transition:all 0.25s ease;
+    letter-spacing:0.3px;
+}
+
+button:hover{
+    transform:scale(1.05);
+    opacity:0.9;
+}
+
+#addStudentBtn{background:#00c6ff;color:black;}
+#saveBtn{background:#00ff95;color:black;}
+
+table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0 10px;
+}
+
+thead tr{
+    background:rgba(255,255,255,0.15);
+}
+
+th{
+    padding:14px;
+    font-weight:600;
+    letter-spacing:0.5px;
+}
+
+td{
+    padding:14px;
+}
+
+tbody tr{
+    background:rgba(255,255,255,0.06);
+    border-radius:12px;
+}
+
+tbody tr td:first-child{
+    border-radius:12px 0 0 12px;
+}
+
+tbody tr td:last-child{
+    border-radius:0 12px 12px 0;
+}
+
+
+input[type="checkbox"]{
+    width:18px;
+    height:18px;
+    cursor:pointer;
+}
+
+/* ====== DASHBOARD SECTION ====== */
+
+.student-card{
+    background:rgba(255,255,255,0.06);
+    padding:18px;
+    border-radius:14px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:all 0.3s ease;
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+.student-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 35px rgba(0,198,255,0.35);
+}
+
+
+.assignment-box{
+    background:rgba(255,255,255,0.08);
+    padding:15px;
+    border-radius:12px;
+    margin-top:10px;
+}
+
+.grade-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:10px;
+    margin-top:10px;
+}
+
+input[type="number"], textarea{
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #444;
+    width:100%;
+    background:#1c1c1c;
+    color:white;
+}
+
+textarea{margin-top:10px;}
+
+.save-btn{background:#667eea;color:white;}
+.view-btn{background:#00b894;color:white;}
+.reset-btn{background:#ff4d4d;color:white;}
+
+.progress-bar{
+    height:8px;
+    background:#444;
+    border-radius:10px;
+    margin-top:8px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    background:linear-gradient(90deg,#00c6ff,#00ff95);
+    transition: width 0.8s ease;
+}
+.light-mode{
+    background:#f5f5f5;
+    color:#111;
+}
+@media(max-width:900px){
+
+    body{
+        padding:20px;
+    }
+
+    .grade-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    header{
+        flex-direction:column;
+        gap:15px;
+        align-items:flex-start;
+    }
+
+    button{
+        margin-bottom:10px;
+    }
+}
+.light-mode{
+    background:#f4f6f9;
+    color:#111;
+}
+
+.light-mode .container{
+    background:white;
+    border:1px solid #ddd;
+}
+
+.light-mode .student-card{
+    background:#f8f9fa;
+}
+
+.light-mode table tbody tr{
+    background:#f1f1f1;
+}
+
+
+/* Enhanced Button Animations */
+button {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 198, 255, 0.4);
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: translateY(0) scale(0.96);
+}
+
+/* Specific Gradient Button Pulse */
+#saveBtn, #addStudentBtn, .login-form button {
+    animation: pulseGlow 3s infinite;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 149, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 149, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 149, 0); }
+}
+
+.card:hover, .stat-box:hover, .student-card:hover {
+    border: 1px solid rgba(0, 198, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px) scale(1.01);
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Fix for .hidden class to support animation */
+.hidden {
+    display: none !important;
+}
+
+input, select, textarea {
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #00c6ff;
+    background: #252525;
+    box-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
+    transform: scale(1.01);
+}
