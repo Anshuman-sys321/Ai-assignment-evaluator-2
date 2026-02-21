@@ -20,14 +20,11 @@
     </div>
 </div>
 
-<!-- CLASS SUMMARY -->
 <div class="container">
 <h2>📊 Class Summary</h2>
 <p>Total Students: <span id="totalStudents">0</span></p>
 <p>Average Score: <span id="classAverage">0</span></p>
 </div>
-
-<!-- ATTENDANCE -->
 <div class="container">
 <h2>📘 Attendance</h2>
 
@@ -48,7 +45,6 @@
 </table>
 </div>
 
-<!-- ASSIGNMENTS -->
 <div class="container">
 <h2>📝 Assignment Evaluations</h2>
 <div id="classList"></div>
@@ -59,13 +55,10 @@
 
 <script>
 
-/* ================= SUPABASE CONFIG ================= */
-
 const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
 const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-/* ================= ATTENDANCE SYSTEM ================= */
 
 let students = [];
 
@@ -187,7 +180,6 @@ async function saveAttendance(){
     loadAttendance();
 }
 
-/* ================= ASSIGNMENTS ================= */
 
 async function loadDashboard(){
 
@@ -200,11 +192,6 @@ await supabaseClient
 let container =
 document.getElementById("classList");
 container.innerHTML="";
-
-if(!submissions || submissions.length===0){
-container.innerHTML="<h3>No submissions found.</h3>";
-return;
-}
 
 submissions.forEach(sub=>{
 let box=document.createElement("div");
@@ -220,8 +207,6 @@ View PDF</button>
 container.appendChild(box);
 });
 }
-
-/* ================= CLASS SUMMARY ================= */
 
 async function loadClassSummary(){
 
@@ -250,8 +235,6 @@ document.getElementById("classAverage").innerText=
 avg.toFixed(1)+" / 100";
 }
 }
-
-/* ================= LEADERBOARD ================= */
 
 async function loadLeaderboard(){
 
@@ -293,17 +276,13 @@ leaderboard.innerHTML+=`
 });
 }
 
-/* ================= UI ================= */
-
 function toggleTheme(){
 document.body.classList.toggle("light-mode");
 }
 
 function logout(){
-window.location.href="loginpage.html";
+window.location.href="index.html";
 }
-
-/* ================= INITIAL LOAD ================= */
 
 loadAttendance();
 loadDashboard();
@@ -314,3 +293,4 @@ loadLeaderboard();
 
 </body>
 </html>
+
