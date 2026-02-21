@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problems Faced - Education Challenges</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:linear-gradient(135deg,#0d2b2a,#123c39,#0f2e2c);
+    color:white;
+    overflow-x:hidden;
+    min-height:100vh;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:600px;
+    height:600px;
+    background:radial-gradient(circle,#00ff9520,transparent 70%);
+    top:-200px;
+    right:-200px;
+    animation:float 10s ease-in-out infinite alternate;
+    z-index:-1;
+}
+
+@keyframes float{
+    to{
+        transform:translate(-200px,200px) scale(1.3);
+    }
+}
+
+header{
+    text-align:center;
+    padding:90px 20px 60px;
+    animation:fadeDown 1s ease forwards;
+}
+
+header h1{
+    font-size:2.6rem;
+    background:linear-gradient(90deg,#f5e6c8,#ffffff);
+    background-clip:text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p{
+    margin-top:15px;
+    max-width:650px;
+    margin-left:auto;
+    margin-right:auto;
+    color:#ccc;
+}
+.grid-container{
+    max-width:1300px;
+    margin:50px auto;
+    padding:30px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+    gap:30px;
+}
+
+.card{
+    position:relative;
+    background:rgba(255,255,255,0.05);
+    border-radius:20px;
+    padding:30px;
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,0.1);
+    transition:all 0.5s ease;
+    overflow:hidden;
+    opacity:0;
+    transform:translateY(60px);
+}
+
+.card.visible{
+    opacity:1;
+    transform:translateY(0);
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,#ff6b6b20,#ffa50220);
+    opacity:0;
+    transition:0.4s;
+}
+
+.card:hover::before{
+    opacity:1;
+}
+
+.card:hover{
+    transform:translateY(-12px) scale(1.03);
+    box-shadow:0 25px 50px rgba(0,0,0,0.6);
+}
+
+.card img {
+    width: 70px;
+    height: auto;
+    margin-bottom:18px;
+    filter:grayscale(60%) brightness(0.8);
+    transition:0.4s;
+}
+
+.card:hover img{
+    filter:grayscale(0%) brightness(1.2);
+    transform:rotate(-8deg) scale(1.1);
+}
+
+.card h3{
+    font-size:1.2rem;
+    margin-bottom:12px;
+    color:#f5e6c8;
+}
+
+.card p{
+    font-size:0.95rem;
+    color:#ddd;
+    line-height:1.6;
+}
+
+footer{
+    text-align:center;
+    padding:50px 20px;
+    color:#777;
+}
+
+@keyframes fadeDown{
+    from{opacity:0;transform:translateY(-40px);}
+    to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>The Challenges in Education Today</h1>
+    <p>Before intelligent automation, institutions face operational, academic, and evaluation limitations that directly impact learning outcomes.</p>
+</header>
+
+<section class="grid-container">
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/classroom.png" class="img-fluid">
+        <h3>Large Class Sizes</h3>
+        <p>Teachers struggle to provide personalised attention due to high student-to-teacher ratios.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/time.png" class="img-fluid">
+        <h3>Delayed Feedback</h3>
+        <p>Manual grading cycles delay feedback, reducing students’ ability to improve efficiently.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/error.png" class="img-fluid">
+        <h3>Inconsistent Assessment</h3>
+        <p>Different evaluators apply varying standards, leading to unfair and biased grading.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/work.png" class="img-fluid">
+        <h3>Teacher Workload</h3>
+        <p>Administrative tasks and evaluation pressure reduce time available for quality teaching.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/document.png" class="img-fluid">
+        <h3>Paper-Based Records</h3>
+        <p>Manual record keeping makes tracking academic progress slow and inefficient.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/graph.png" class="img-fluid">
+        <h3>Lack of Analytics</h3>
+        <p>Institutions lack real-time performance insights for identifying struggling students early.</p>
+    </div>
+
+</section>
+
+<footer>
+© 2026 AI Assignment Evaluator | GIET University, Gunupur
+</footer>
+
+<script>
+const cards = document.querySelectorAll('.card');
+
+const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+        }
+    });
+},{threshold:0.2});
+
+cards.forEach(card=>{
+    observer.observe(card);
+});
+</script>
+
+</body>
+</html>

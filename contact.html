@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - AI Assignment Evaluator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeDown 1s ease forwards;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            background: linear-gradient(90deg, #00c6ff, #00ff95);
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            margin-top: 10px;
+            color: #ccc;
+        }
+
+        .grid-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: rgba(17, 17, 17, 0.85);
+            border-radius: 18px;
+            padding: 30px 20px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.4s ease;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeUp 0.8s ease forwards;
+        }
+
+        .card:nth-child(1) { animation-delay: 0.2s; }
+        .card:nth-child(2) { animation-delay: 0.4s; }
+        .card:nth-child(3) { animation-delay: 0.6s; }
+        .card:nth-child(4) { animation-delay: 0.8s; }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            border-color: #00ff95;
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .card a {
+            text-decoration: none;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: #bbb;
+            margin-top: 5px;
+        }
+
+        .card .contact-info {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #00ff95;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-border {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0%, #00c6ff 50%, #00ff95 100%);
+            animation: rotateBorder 3s linear infinite;
+        }
+
+        .logo-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            background: #111;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .card:hover .logo-container img {
+            transform: scale(1.1);
+        }
+
+        @keyframes rotateBorder {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        footer {
+            margin-top: 60px;
+            font-size: 0.8rem;
+            color: #777;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Contact Our Team</h1>
+    <p>We’re here to support your academic journey.</p>
+</header>
+
+<div class="grid-container">
+    
+    <div class="card">
+        <a href="https://www.linkedin.com/in/umashankar-mishra-b74743377?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">
+            <h3>Umashankar Mishra</h3>
+        </a>
+        <div class="logo-wrapper">
+            <div class="logo-border"></div>
+            <div class="logo-container">
+                <img src="Umashankar.logo.jpeg" alt="Umashankar Mishra" class="img-fluid">
+            </div>
+        </div>
+        <p>FRONTEND DEVELOPER</p>
+        <div class="contact-info">umashankarmishra139@gmail.com</div>
+    </div>
+
+    <div class="card">
+        <a href="https://www.linkedin.com/in/aryan-raj-paul-59bb0b384?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">
+            <h3>Aryanraj Paul</h3>
+        </a>
+        <div class="logo-wrapper">
+            <div class="logo-border"></div>
+            <div class="logo-container">
+                <img src="aryan.logo.jpeg" alt="Aryanraj Paul" class="img-fluid">
+            </div>
+        </div>
+        <p>BACKEND DEVELOPER</p>
+        <div class="contact-info">aryanrajpaul5@gmail.com</div>
+    </div>
+
+    <div class="card">
+        <a href="https://www.linkedin.com/in/anshuman-pradhan-367329368?utm_source=share_via&utm_content=profile&utm_medium=member_android">
+            <h3>Anshuman Pradhan</h3>
+        </a>
+        <div class="logo-wrapper">
+            <div class="logo-border"></div>
+            <div class="logo-container">
+                <img src="Anshuman.logo.jpeg" alt="Anshuman Pradhan" class="img-fluid">
+            </div>
+        </div>
+        <p>FRONTEND DEVELOPER</p>
+        <div class="contact-info">anshu26112007@gmail.com</div>
+    </div>
+
+    <div class="card">
+        <a href="https://www.linkedin.com/in/d-harasa-bardhan-a04864395?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app">
+            <h3>D Harsabardhan</h3>
+        </a>
+        <div class="logo-wrapper">
+            <div class="logo-border"></div>
+            <div class="logo-container">
+                <img src="D Harsabardhan.logo.jpeg" alt="D Harsabardhan" class="img-fluid">
+            </div>
+        </div>
+        <p>PROJECT CO-ORDINATOR</p>
+        <div class="contact-info">bardhandharasa@gmail.com</div>
+    </div>
+
+</div>
+
+<footer>
+    © 2026 AI Assignment Evaluator | GIET University, Gunupur
+</footer>
+
+</body>
+</html>

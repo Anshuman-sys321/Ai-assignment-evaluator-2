@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Problems Solved - AI Assignment Evaluator</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:linear-gradient(135deg,#071b2b,#0f2027,#1a2f3f);
+    min-height:100vh;
+    color:white;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    width:500px;
+    height:500px;
+    background:radial-gradient(circle,#00ff9555,transparent 70%);
+    top:-150px;
+    left:-150px;
+    animation:floatGlow 8s ease-in-out infinite alternate;
+    z-index:-1;
+}
+
+@keyframes floatGlow{
+    to{
+        transform:translate(200px,200px) scale(1.2);
+    }
+}
+
+header{
+    text-align:center;
+    padding:80px 20px 50px;
+    animation:fadeDown 1s ease forwards;
+}
+
+header h1{
+    font-size:2.5rem;
+    background:linear-gradient(90deg,#00c6ff,#00ff95);
+    background-clip:text;
+    background-clip:transparent;
+}
+
+header p{
+    margin-top:15px;
+    color:#ccc;
+    max-width:600px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.grid-container{
+    max-width:1200px;
+    margin:50px auto;
+    padding:20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:30px;
+}
+.card{
+    position:relative;
+    background:rgba(17,17,17,0.85);
+    border-radius:20px;
+    padding:30px;
+    backdrop-filter:blur(12px);
+    border:1px solid rgba(255,255,255,0.1);
+    transition:all 0.5s ease;
+    overflow:hidden;
+    transform:translateY(50px);
+    opacity:0;
+}
+
+.card.visible{
+    transform:translateY(0);
+    opacity:1;
+}
+
+.card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(135deg,#00ff9510,#00c6ff10);
+    opacity:0;
+    transition:0.5s;
+}
+
+.card:hover::before{
+    opacity:1;
+}
+
+.card:hover{
+    transform:translateY(-12px) scale(1.03);
+    box-shadow:0 20px 40px rgba(0,0,0,0.7);
+}
+
+.card img{
+    width:70px;
+    margin-bottom:15px;
+    filter:brightness(0.8) saturate(1.5);
+    transition:0.4s ease;
+}
+
+.card:hover img{
+    filter:brightness(1.2) saturate(2);
+    transform:rotate(8deg) scale(1.1);
+}
+
+.card h3{
+    margin-bottom:10px;
+    font-size:1.2rem;
+    color:#00ff95;
+}
+
+.card p{
+    font-size:0.95rem;
+    color:#ccc;
+}
+
+.stats{
+    margin:100px auto;
+    max-width:1000px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:30px;
+    text-align:center;
+}
+
+.stat{
+    background:rgba(255,255,255,0.05);
+    padding:40px;
+    border-radius:15px;
+    transition:0.4s;
+}
+
+.stat:hover{
+    background:linear-gradient(135deg,#00c6ff30,#00ff9530);
+    transform:scale(1.05);
+}
+
+.stat h2{
+    font-size:2.5rem;
+    color:#00ff95;
+}
+
+.stat p{
+    margin-top:8px;
+    color:#ccc;
+}
+
+footer{
+    text-align:center;
+    padding:40px 20px;
+    color:#777;
+}
+
+@keyframes fadeDown{
+    from{opacity:0;transform:translateY(-40px);}
+    to{opacity:1;transform:translateY(0);}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Problems We Have Solved</h1>
+    <p>Our AI-driven evaluation system addresses core challenges in academic assessment with precision, automation, and intelligence.</p>
+</header>
+
+<section class="grid-container">
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/clock.png">
+        <h3>Time-Consuming Manual Grading</h3>
+        <p>Automated instant marking reduces grading workload and ensures immediate result delivery upon submission.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/checklist.png">
+        <h3>Inconsistent Evaluation</h3>
+        <p>Standardised AI-driven rubrics ensure fairness, transparency, and accuracy across all assessments.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/combo-chart.png">
+        <h3>Lack of Performance Insights</h3>
+        <p>Integrated analytics dashboards provide real-time performance tracking and progress monitoring.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/security-checked.png">
+        <h3>Data Security Concerns</h3>
+        <p>Secure cloud storage safeguards assignments, marks, and evaluation history with audit capabilities.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/comments.png">
+        <h3>Poor Feedback Quality</h3>
+        <p>Actionable, question-level feedback helps students improve with targeted recommendations.</p>
+    </div>
+
+    <div class="card">
+        <img src="https://img.icons8.com/fluency/96/settings.png">
+        <h3>Limited Teacher Control</h3>
+        <p>Instructors can review AI suggestions, override grades, and customise evaluation criteria.</p>
+    </div>
+
+</section>
+
+<section class="stats">
+    <div class="stat">
+        <h2>85%</h2>
+        <p>Reduction in Grading Time</p>
+    </div>
+    <div class="stat">
+        <h2>98%</h2>
+        <p>Evaluation Consistency</p>
+    </div>
+    <div class="stat">
+        <h2>Instant</h2>
+        <p>Feedback Delivery</p>
+    </div>
+    <div class="stat">
+        <h2>Secure</h2>
+        <p>Cloud Storage</p>
+    </div>
+</section>
+
+<footer>
+© 2026 AI Assignment Evaluator | GIET University, Gunupur
+</footer>
+
+<script>
+const cards = document.querySelectorAll('.card');
+
+const observer = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+        if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+        }
+    });
+},{threshold:0.2});
+
+cards.forEach(card=>{
+    observer.observe(card);
+});
+</script>
+
+</body>
+</html>

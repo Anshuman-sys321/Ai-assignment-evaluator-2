@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About | AI Assignment Evaluator</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    color:white;
+    overflow-x:hidden;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+.hero{
+    height:50vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    padding:0 20px;
+}
+
+.hero h1{
+    font-size:3rem;
+    background:linear-gradient(to right,#667eea,#764ba2,#00c6ff);
+    background-size:200%;
+    background-clip:text;
+    background-clip:transparent;
+    animation:shine 4s linear infinite;
+}
+
+.hero p{
+    margin-top:20px;
+    font-size:1.2rem;
+    color:#ddd;
+    max-width:700px;
+    line-height:1.6;
+}
+
+
+@keyframes shine{
+    to{background-position:200% center;}
+}
+
+.section{
+    padding:60px 10%;
+}
+
+.grid-container{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:40px;
+}
+
+
+.card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(15px);
+    padding:40px;
+    border-radius:20px;
+    transition:all .5s ease;
+    border:1px solid rgba(255,255,255,0.08);
+    position:relative;
+    overflow:hidden;
+}
+
+
+.card::before{
+    content:"";
+    position:absolute;
+    top:-100%;
+    left:-100%;
+    width:200%;
+    height:200%;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,0.1),transparent);
+    transform:rotate(25deg);
+    transition:.6s;
+}
+
+.card:hover::before{
+    top:100%;
+    left:100%;
+}
+
+.card:hover{
+    transform:translateY(-15px) scale(1.03);
+    box-shadow:0 20px 50px rgba(0,0,0,0.6);
+}
+
+.card h2{
+    margin-bottom:20px;
+    font-size:1.6rem;
+    background:linear-gradient(90deg,#00c6ff,#00ff95);
+    background-clip:text;
+    background-clip:transparent;
+}
+
+.card p{
+    color:#ccc;
+    line-height:1.7;
+}
+
+
+.image-box{
+    overflow:hidden;
+    border-radius:20px;
+}
+
+.image-box img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    filter:grayscale(70%) brightness(80%);
+    transition:.6s ease;
+}
+
+.image-box:hover img{
+    filter:grayscale(0%) brightness(100%);
+    transform:scale(1.1);
+}
+
+
+.giet-section{
+    text-align:center;
+    padding:120px 15%;
+}
+
+.giet-section h2{
+    font-size:2rem;
+    margin-bottom:20px;
+    background:linear-gradient(to right,#667eea,#00c6ff);
+    background-clip:text;
+    background-clip:transparent;
+}
+
+.giet-section p{
+    color:#ccc;
+    font-size:1.1rem;
+    line-height:1.8;
+}
+
+.reveal{
+    opacity:0;
+    transform:translateY(40px);
+    transition:all .8s ease;
+}
+
+.reveal.active{
+    opacity:1;
+    transform:translateY(0);
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    background:rgba(0,0,0,0.4);
+    font-size:.9rem;
+    color:#aaa;
+}
+
+
+@media(max-width:768px){
+    .navbar{
+        padding:15px 25px;
+    }
+
+    .hero h1{
+        font-size:2.2rem;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<section class="hero">
+    <div>
+        <h1>Transforming Academic Evaluation with AI</h1>
+        <p>
+            The AI Assignment Evaluator empowers institutions with intelligent automation,
+            delivering precision, consistency, and instant academic insights.
+        </p>
+    </div>
+</section>
+<section class="section">
+    <div class="grid-container">
+        
+        <div class="card reveal">
+            <h2>1. Our Core Mission</h2>
+            <p>
+                To revolutionize academic assessment through intelligent automation.
+                We aim to eliminate manual grading inefficiencies and ensure fair,
+                transparent, and scalable evaluation systems powered by artificial intelligence.
+            </p>
+        </div>
+
+        <div class="card reveal">
+            <h2>2. How the AI Engine Works</h2>
+            <p>
+                Our AI engine processes student submissions using natural language
+                processing and evaluation algorithms. It compares responses against
+                model answers, identifies conceptual accuracy, and generates structured
+                feedback with precision scoring.
+            </p>
+        </div>
+
+        <div class="card reveal">
+            <h2>3. Student-Teacher Dual Value</h2>
+            <p>
+                Students receive instant feedback and performance analytics,
+                while teachers benefit from automated grading, reduced workload,
+                and actionable academic insights — creating a balanced academic ecosystem.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<section class="giet-section reveal">
+    <h2>About GIET University</h2>
+    <p>
+        GIET University, Gunupur, is committed to academic excellence,
+        innovation, and research-driven learning. By integrating AI into
+        academic evaluation, GIET continues its mission of preparing students
+        for a technologically advanced future.
+    </p>
+</section>
+
+<footer>
+    © 2026 GIET University | AI Assignment Evaluator
+</footer>
+
+<script>
+
+function revealOnScroll(){
+    const reveals=document.querySelectorAll(".reveal");
+    for(let i=0;i<reveals.length;i++){
+        let windowHeight=window.innerHeight;
+        let elementTop=reveals[i].getBoundingClientRect().top;
+        let revealPoint=120;
+
+        if(elementTop<windowHeight-revealPoint){
+            reveals[i].classList.add("active");
+        }
+    }
+}
+
+window.addEventListener("scroll",revealOnScroll);
+
+</script>
+
+</body>
+</html>
