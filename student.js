@@ -1,5 +1,5 @@
-<script>
-        const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
+
+const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -160,4 +160,3 @@
             await supabaseClient.auth.signOut();
             window.location.href = "index.html";
         }
-    </script>
