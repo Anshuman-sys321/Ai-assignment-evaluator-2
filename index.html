@@ -7,7 +7,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <style>
+   <style>
         * {
             box-sizing: border-box;
             margin: 0;
@@ -48,7 +48,6 @@
             align-items: center;
         }
 
-
         .logo-border {
             position: absolute;
             width: 100%;
@@ -82,7 +81,6 @@
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-
 
         h1 {
             margin-bottom: 25px;
@@ -145,7 +143,6 @@
             transform: translateY(-2px);
         }
 
-
         button.submit-btn {
             width: 100%;
             padding: 14px;
@@ -187,16 +184,64 @@
             font-size: 0.8rem;
             color: #666;
         }
+        
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 15, 25, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-logo {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(0, 198, 255, 0.5); 
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #ccc;
+            font-weight: 500;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #00ff95;
+        }
     </style>
 </head>
 
 <body>
-
+<nav class="navbar">
+    <div class="nav-logo">AI Evaluator</div>
+    <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="problem faced.html">Problems Faced</a></li>
+        <li><a href="problem solved.html">Problems Solved</a></li>
+        <li><a href="contact.html">Contact</a></li>
+    </ul>
+</nav>
 <div class="container">
     <div class="logo-wrapper">
         <div class="logo-border"></div>
         <div class="logo-container">
-            <img src="giet.logo.png" alt="GIET Logo">
+            <img src="giet.logo.png" alt="GIET Logo" class="img-fluid">
         </div>
     </div>
 
