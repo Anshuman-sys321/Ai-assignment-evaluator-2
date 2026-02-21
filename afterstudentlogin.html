@@ -10,6 +10,39 @@
     <link rel="stylesheet" href="student.css">
 
 </head>
+ <style>
+        .main-content {
+            transition: margin-left 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            padding: 20px;
+        }
+        .sidebar.active ~ .main-content {
+            margin-left: 280px;
+        }
+        .dashboard-section {
+            display: none;
+            animation: slideUpFade 0.5s ease;
+        }
+        .dashboard-section.active {
+            display: block;
+        }
+        .menu-icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: white;
+            padding: 10px;
+        }
+        .nav-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        #studentRank {
+            font-size: 48px;
+            color: #00ff95;
+            text-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
+        }
+    </style>
+</head>
 <body>
 
     <div id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -72,6 +105,11 @@
                     <button onclick="submitAssignment()" id="submitBtn">Submit for AI Review</button>
                     <p id="submitMessage" style="margin-top:15px; text-align:center;"></p>
                 </div>
+                <div class="card" id="questionPaperCard" style="border: 1px solid #00c6ff; display:none;">
+    <h2 style="color: #00c6ff;">📢 New Question Paper Available</h2>
+    <p id="qPaperTitle" style="margin-bottom:10px;"></p>
+    <button onclick="viewQuestionPaper()" style="background: #00c6ff; color: #000;">View Question PDF</button>
+                </div>
             </section>
 
             <section id="performance" class="dashboard-section">
@@ -85,8 +123,9 @@
 
         </div>
     </div>
+
     <script>
-const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
+        const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
@@ -174,7 +213,6 @@ const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
             }
         }
 
-
         async function showPerformance(){
             const name = document.getElementById("studentName").value.trim();
             if(!name){ alert("Enter your name in the Home tab first!"); return; }
@@ -249,12 +287,4 @@ const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
         }
     </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
