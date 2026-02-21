@@ -1,6 +1,4 @@
 
-/* ====== DARK ATTENDANCE THEME (KEPT) ====== */
-
 *{
     margin:0;
     padding:0;
@@ -68,7 +66,6 @@ body{
 }
 
 
-/* ====== ATTENDANCE ====== */
 
 header{
     display:flex;
@@ -141,7 +138,7 @@ input[type="checkbox"]{
     cursor:pointer;
 }
 
-/* ====== DASHBOARD SECTION ====== */
+
 
 .student-card{
     background:rgba(255,255,255,0.06);
@@ -244,7 +241,7 @@ textarea{margin-top:10px;}
 }
 
 
-/* Enhanced Button Animations */
+
 button {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
@@ -289,7 +286,7 @@ button:active {
     }
 }
 
-/* Fix for .hidden class to support animation */
+
 .hidden {
     display: none !important;
 }
@@ -305,3 +302,4 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
     transform: scale(1.01);
 }
+
