@@ -1,45 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Teacher Dashboard</title>
-<link rel="stylesheet" href="teacher.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="teacher.css">
+    <style>
+        
+        .ai-highlight { border-left: 4px solid #00d4ff !important; background: rgba(0, 212, 255, 0.05); }
+        .score-pill { background: #00d4ff; color: #000; padding: 2px 10px; border-radius: 20px; font-weight: bold; font-size: 0.9em; }
+        .btn-ai-pdf { 
+            background: linear-gradient(135deg, #00d4ff, #0072ff); 
+            color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 10px; font-weight: 600;
+        }
+        .btn-ai-pdf:hover { opacity: 0.9; transform: translateY(-1px); }
+        .assignment-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; }
+    </style>
 </head>
 
-    <body>
+<body>
 
 <div class="topbar">
-    <div class="logo">👩‍🏫 <span>Teacher Dashboard</span></div>
+    <div class="logo">
+        <span>👩‍🏫</span>
+        <span>Teacher Dashboard</span>
+    </div>
     <div class="top-actions">
-        <button onclick="toggleTheme()">🌙</button>
-        <button onclick="logout()"
-            style="background:#ff4d4d;color:white;padding:8px 15px; border:none;border-radius:8px;cursor:pointer;font-weight:bold;">
-            Logout
-        </button>
+        <button class="btn-theme" onclick="toggleTheme()">🌙 Theme</button>
+        <button class="btn-logout" onclick="logout()">Logout</button>
     </div>
 </div>
 
 <div class="container">
     <h2>📊 Class Summary</h2>
-    <p>Total Students: <span id="totalStudents">0</span></p>
-    <p>Average Score: <span id="classAverage">0</span></p>
+    <div class="summary-stats">
+        <div class="stat-pill">
+            <label>Total Students</label>
+            <div class="stat-value" id="totalStudents">—</div>
+        </div>
+        <div class="stat-pill">
+            <label>Average Score</label>
+            <div class="stat-value" id="classAverage">—</div>
+        </div>
+    </div>
 </div>
 
 <div class="container">
-    <h2>📘 Attendance</h2>
-    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <input type="text" id="newStudentName" placeholder="Enter Student Name" style="flex: 1;">
-        <button onclick="addStudent()" id="addStudentBtn">➕ Add Student</button>
-        <button onclick="saveAttendance()" id="saveBtn">💾 Save Attendance</button>
+    <h2>📘 Attendance & Submissions</h2>
+    <div class="form-row">
+        <input type="text" id="newStudentName" placeholder="Enter student name…">
+        <button id="addStudentBtn" class="btn-primary-glow" onclick="addStudent()">➕ Add Student</button>
+        <button id="saveBtn" class="btn-primary-glow" onclick="saveAttendance()">💾 Save All</button>
     </div>
-
-    <table id="attendanceTable" style="width:100%;">
+    <table id="attendanceTable">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>Present Today</th>
                 <th>Attendance %</th>
+                <th>Assignment Submitted</th>
                 <th>Remove</th>
             </tr>
         </thead>
@@ -49,164 +70,190 @@
 
 <div class="container">
     <h2>📤 Upload Master Questions</h2>
-    <p style="color:#aaa; font-size:0.9rem; margin-bottom: 15px;">Upload the PDF questions for students to view.</p>
-    <div style="display: flex; flex-direction: column; gap: 15px;">
+    <p class="upload-hint">Upload a PDF question paper for students to view.</p>
+    <div class="upload-stack">
         <input type="file" id="questionFile" accept="application/pdf">
-        <button onclick="uploadQuestions()" id="uploadQBtn" style="background:#667eea; color:white;">Post Questions to Students</button>
+        <button id="uploadQBtn" onclick="uploadQuestions()">📬 Post Questions to Students</button>
     </div>
-    <p id="uploadStatus" style="margin-top:10px; font-size:0.9rem;"></p>
+    <p id="uploadStatus"></p>
 </div>
 
 <div class="container">
-    <h2>📝 Assignment Evaluations</h2>
-    <div id="classList"></div>
+    <h2>🤖 AI Evaluated Results</h2>
+    <p class="upload-hint">View detailed AI feedback and graded answer sheets.</p>
+    <div id="evaluatedList" class="assignment-grid"></div>
+</div>
 
-    <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 30px 0;">
-
+<div class="container">
+    <h2>📝 All Submissions</h2>
+    <div id="classList" class="assignment-grid"></div>
+    <hr class="leaderboard-divider">
     <h3>🏆 Top Performers</h3>
     <div id="leaderboard"></div>
 </div>
 
 <script>
+    
     const supabaseUrl = "https://dezrvgfkzwdpdzztbiyo.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRlenJ2Z2ZrendkcGR6enRiaXlvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNTQ0MDEsImV4cCI6MjA4NjczMDQwMX0.yspqyhyhG4k3V47vGi29eemNN-BPLhefrBfzvy82JLo";
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     let students = [];
 
-    async function loadAttendance(){
+    
+    async function loadAttendance() {
         const { data, error } = await supabaseClient.from("attendance").select("*");
-        if(error || !data) return;
+        if (error || !data) return;
 
-        const uniqueStudents = [...new Set(data.map(s => s.student_name))];
-        students = uniqueStudents.map(name => {
-            const studentRecords = data.filter(s => s.student_name === name);
-            const totalDays = studentRecords.length;
-            const presentDays = studentRecords.filter(s => s.present).length;
-            const percentage = totalDays > 0 ? ((presentDays / totalDays) * 100).toFixed(1) : 0;
-            return { name, presentToday: false, percentage };
+        const uniqueNames = [...new Set(data.map(s => s.student_name))];
+        students = uniqueNames.map(name => {
+            const records = data.filter(s => s.student_name === name);
+            const total = records.length;
+            const present = records.filter(s => s.present).length;
+            const percentage = total > 0 ? ((present / total) * 100).toFixed(1) : "0.0";
+            const submitted = localStorage.getItem("submit_" + name) || null;
+            return { name, presentToday: false, percentage, submitted };
         });
         renderAttendance();
     }
 
-    function renderAttendance(){
+    function renderAttendance() {
         const tbody = document.querySelector("#attendanceTable tbody");
         tbody.innerHTML = "";
-        students.forEach((student, index) => {
+        students.forEach((student, i) => {
+            const yesClass = student.submitted === "yes" ? "active-yes" : "";
+            const noClass = student.submitted === "no" ? "active-no" : "";
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${student.name}</td>
-                <td><input type="checkbox" ${student.presentToday ? "checked":""} onchange="togglePresent(${index})"></td>
+                <td style="text-align:center;"><input type="checkbox" onchange="togglePresent(${i})"></td>
                 <td>${student.percentage}%</td>
-                <td><button onclick="removeStudent(${index})" style="background:transparent; border:none; cursor:pointer;">❌</button></td>
+                <td>
+                    <div class="submit-toggle">
+                        <button class="${yesClass}" onclick="setSubmission(${i},'yes')">✓ Yes</button>
+                        <button class="${noClass}" onclick="setSubmission(${i},'no')">✗ No</button>
+                    </div>
+                </td>
+                <td><button class="btn-remove" onclick="removeStudent(${i})">✕</button></td>
             `;
             tbody.appendChild(row);
         });
     }
 
-    function addStudent(){
+   
+    async function loadDashboard() {
+    const { data: submissions, error } = await supabaseClient
+        .from("assignments").select("*").order("created_at", { ascending: false });
+    
+    const container = document.getElementById("classList");
+    const evaluatedContainer = document.getElementById("evaluatedList");
+    
+    container.innerHTML = "";
+    evaluatedContainer.innerHTML = "";
+
+    if (error || !submissions || submissions.length === 0) {
+        container.innerHTML = `<p style="color:var(--text-muted);">No submissions found.</p>`;
+        evaluatedContainer.innerHTML = `<p style="color:var(--text-muted);">No evaluations found.</p>`;
+        return;
+    }
+
+    submissions.forEach(sub => {
+        
+        box.className = "assignment-box";
+        box.innerHTML = `
+            <strong>👤 ${sub.student_name}</strong>
+            <p class="meta">${sub.subject || 'Math'} — ${sub.title}</p>
+            <p class="meta" style="font-size:0.8em;">Status: <span style="color:var(--accent-cyan)">${sub.status}</span></p>
+            <button class="btn-view-pdf" onclick="window.open('${sub.file_url}','_blank')">📄 View Submission</button>
+        `;
+        container.appendChild(box);
+
+        if (sub.total_marks !== null || sub.ai_pdf_url) {
+            const aiBox = document.createElement("div");
+            aiBox.className = "assignment-box ai-highlight";
+            aiBox.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong>🎓 ${sub.student_name}</strong>
+                    <span class="score-pill">${sub.total_marks ?? '0'}/100</span>
+                </div>
+                <p class="meta">${sub.title}</p>
+                <p class="meta" style="font-style:italic; font-size:0.85em;">"${sub.ai_remark || 'No remarks provided'}"</p>
+                <button class="btn-ai-pdf" onclick="window.open('${sub.ai_pdf_url || sub.file_url}','_blank')">
+                    🤖 View Graded Answer PDF
+                </button>
+            `;
+            evaluatedContainer.appendChild(aiBox);
+        }
+    });
+}
+
+    
+    function togglePresent(index) { students[index].presentToday = !students[index].presentToday; }
+    function setSubmission(index, value) {
+        students[index].submitted = value;
+        localStorage.setItem("submit_" + students[index].name, value);
+        renderAttendance();
+    }
+    function addStudent() {
         const name = document.getElementById("newStudentName").value.trim();
-        if(!name) return;
-        students.push({ name, presentToday: false, percentage: 0 });
+        if (!name) return;
+        students.push({ name, presentToday: false, percentage: "0.0", submitted: null });
         document.getElementById("newStudentName").value = "";
         renderAttendance();
     }
+    function removeStudent(index) {
+        students.splice(index, 1);
+        renderAttendance();
+    }
 
-    function togglePresent(index) { students[index].presentToday = !students[index].presentToday; }
-    function removeStudent(index) { students.splice(index, 1); renderAttendance(); }
-
-    async function saveAttendance(){
+    async function saveAttendance() {
         const today = new Date().toISOString().split("T")[0];
-        for(const student of students){
-            await supabaseClient.from("attendance").upsert([
-                { student_name: student.name, date: today, present: student.presentToday }
-            ], { onConflict: ["student_name", "date"] });
+        for (const s of students) {
+            await supabaseClient.from("attendance").upsert([{ student_name: s.name, date: today, present: s.presentToday }]);
         }
-        alert("Attendance Saved");
+        alert("Saved!");
         loadAttendance();
     }
 
-    async function loadDashboard(){
-        const { data: submissions } = await supabaseClient.from("assignments").select("*").order("created_at", { ascending: false });
-        let container = document.getElementById("classList");
-        container.innerHTML = "";
-        if(!submissions || submissions.length === 0){
-            container.innerHTML = "<h3>No submissions found.</h3>";
-            return;
-        }
-        submissions.forEach(sub => {
-            let box = document.createElement("div");
-            box.className = "assignment-box"; 
-            box.style.marginBottom = "15px";
-            box.innerHTML = `
-                <strong>👤 ${sub.student_name}</strong><br>
-                ${sub.subject} - ${sub.title}<br>
-                <b>Marks:</b> ${sub.total_marks ?? "Pending"}<br>
-                <b>Status:</b> ${sub.status ?? "Pending"}<br>
-                <button onclick="window.open('${sub.file_url}')" style="margin-top:10px; background:#00ff95; color:black; padding:5px 10px;">View PDF</button>
-            `;
-            container.appendChild(box);
-        });
-    }
-
-    async function loadClassSummary(){
-        const { data: submissions } = await supabaseClient.from("assignments").select("*");
-        if(!submissions) return;
-        const uniqueStudents = [...new Set(submissions.map(s => s.student_name))];
-        document.getElementById("totalStudents").innerText = uniqueStudents.length;
-        let graded = submissions.filter(s => s.total_marks !== null);
-        if(graded.length > 0){
-            let avg = graded.reduce((a, b) => a + b.total_marks, 0) / graded.length;
-            document.getElementById("classAverage").innerText = avg.toFixed(1) + " / 100";
+    async function loadClassSummary() {
+        const { data } = await supabaseClient.from("assignments").select("student_name, total_marks");
+        if (!data) return;
+        const unique = [...new Set(data.map(s => s.student_name))];
+        document.getElementById("totalStudents").textContent = unique.length;
+        const graded = data.filter(s => s.total_marks !== null);
+        if (graded.length > 0) {
+            const avg = graded.reduce((a, b) => a + b.total_marks, 0) / graded.length;
+            document.getElementById("classAverage").textContent = avg.toFixed(1) + " / 100";
         }
     }
 
-    async function loadLeaderboard(){
-        const { data: submissions } = await supabaseClient.from("assignments").select("*");
-        if(!submissions) return;
-        let studentScores = {};
-        submissions.forEach(sub => {
-            if(sub.total_marks !== null){
-                if(!studentScores[sub.student_name]) studentScores[sub.student_name] = [];
-                studentScores[sub.student_name].push(sub.total_marks);
-            }
-        });
-        let averages = Object.keys(studentScores).map(name => {
-            let avg = studentScores[name].reduce((a, b) => a + b) / studentScores[name].length;
-            return { name, avg };
-        });
-        averages.sort((a, b) => b.avg - a.avg);
-        let leaderboard = document.getElementById("leaderboard");
-        leaderboard.innerHTML = "";
-        averages.slice(0, 3).forEach((student, index) => {
-            leaderboard.innerHTML += `<div style="margin-bottom:8px;">🏅 #${index+1} ${student.name} - ${student.avg.toFixed(1)}</div>`;
-        });
+    async function loadLeaderboard() {
+        const { data } = await supabaseClient.from("assignments").select("student_name, total_marks");
+        if (!data) return;
+        const ranked = data.filter(s => s.total_marks !== null)
+            .sort((a, b) => b.total_marks - a.total_marks).slice(0, 3);
+        const medals = ["🥇", "🥈", "🥉"];
+        document.getElementById("leaderboard").innerHTML = ranked.map((s, i) => `
+            <div class="leaderboard-item"><span>${medals[i]} ${s.student_name}</span> <strong>${s.total_marks}</strong></div>
+        `).join("");
     }
 
     async function uploadQuestions() {
-        const fileInput = document.getElementById("questionFile");
+        const file = document.getElementById("questionFile").files[0];
+        if (!file) return;
         const status = document.getElementById("uploadStatus");
-        const file = fileInput.files[0];
-        if (!file) { alert("Please select a PDF file first."); return; }
         status.innerText = "Uploading...";
-        const fileName = "questions-" + Date.now() + ".pdf";
-        try {
-            const { error: uploadError } = await supabaseClient.storage.from("assignments").upload(fileName, file);
-            if (uploadError) throw uploadError;
-            const { data: publicData } = supabaseClient.storage.from("assignments").getPublicUrl(fileName);
-            const { error: dbError } = await supabaseClient.from("question_papers").upsert([{ id: 1, file_url: publicData.publicUrl, title: file.name }]);
-            if (dbError) throw dbError;
-            status.style.color = "#00ff95";
-            status.innerText = "Questions successfully posted to students!";
-        } catch (err) {
-            status.style.color = "#ff4d4d";
-            status.innerText = "Error: " + err.message;
-        }
+        const fileName = `q-${Date.now()}.pdf`;
+        await supabaseClient.storage.from("assignments").upload(fileName, file);
+        const { data } = supabaseClient.storage.from("assignments").getPublicUrl(fileName);
+        await supabaseClient.from("question_papers").upsert([{ id: 1, file_url: data.publicUrl, title: file.name }]);
+        status.innerText = "✅ Uploaded!";
     }
 
     function toggleTheme() { document.body.classList.toggle("light-mode"); }
     function logout() { window.location.href = "index.html"; }
 
+   
     loadAttendance();
     loadDashboard();
     loadClassSummary();
