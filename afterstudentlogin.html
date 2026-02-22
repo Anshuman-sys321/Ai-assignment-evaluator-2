@@ -294,7 +294,7 @@
         throw new Error("AI server error");
     }
 
-    const result = await response.json();   // ✅ THIS WAS MISSING
+    const result = await response.json();   
 
     await supabaseClient.from("assignments").update({
         status: "Checked",
@@ -436,6 +436,7 @@
 </script>
 </body>
 </html>
+
 
 
 
