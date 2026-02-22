@@ -22,14 +22,13 @@ body{
 
 .menu-btn{cursor:pointer;}
 
-
 .sidebar {
     width: 280px;
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     position: fixed;
-    left: -280px; 
+    left: -280px;
     top: 0;
     height: 100%;
     z-index: 1000;
@@ -43,7 +42,6 @@ body{
 .sidebar.active {
     transform: translateX(280px); 
 }
-
 
 .sidebar a {
     display: flex;
@@ -61,7 +59,7 @@ body{
 .sidebar a:hover {
     background: rgba(0, 198, 255, 0.15);
     color: #00c6ff;
-    padding-left: 35px; 
+    padding-left: 35px;
     border-left: 4px solid #00c6ff;
 }
 
@@ -75,6 +73,7 @@ body{
     background: rgba(255, 77, 77, 0.1);
     border-left-color: #ff4d4d;
 }
+
 
 #sidebarOverlay {
     position: fixed;
@@ -211,7 +210,7 @@ canvas{
     }
 }
 
-
+/* Enhanced Button Animations */
 button {
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     position: relative;
@@ -228,6 +227,7 @@ button:active {
     transform: translateY(0) scale(0.96);
 }
 
+/* Specific Gradient Button Pulse */
 #saveBtn, #addStudentBtn, .login-form button {
     animation: pulseGlow 3s infinite;
 }
@@ -256,6 +256,7 @@ button:active {
     }
 }
 
+
 .hidden {
     display: none !important;
 }
@@ -271,34 +272,3 @@ input:focus, select:focus, textarea:focus {
     box-shadow: 0 0 8px rgba(0, 198, 255, 0.3);
     transform: scale(1.01);
 }
-
-.main-content {
-            transition: margin-left 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            padding: 20px;
-        }
-        .sidebar.active ~ .main-content {
-            margin-left: 280px;
-        }
-        .dashboard-section {
-            display: none;
-            animation: slideUpFade 0.5s ease;
-        }
-        .dashboard-section.active {
-            display: block;
-        }
-        .menu-icon {
-            font-size: 24px;
-            cursor: pointer;
-            color: white;
-            padding: 10px;
-        }
-        .nav-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        #studentRank {
-            font-size: 48px;
-            color: #00ff95;
-            text-shadow: 0 0 10px rgba(0, 255, 149, 0.3);
-        }
