@@ -139,53 +139,68 @@
             tbody.appendChild(row);
         });
     }
-
-   
-    async function loadDashboard() {
+async function loadDashboard() {
     const { data: submissions, error } = await supabaseClient
-        .from("assignments").select("*").order("created_at", { ascending: false });
-    
+        .from("assignments")
+        .select("*")
+        .order("submission_date", { ascending: false });
+
     const container = document.getElementById("classList");
     const evaluatedContainer = document.getElementById("evaluatedList");
-    
+
     container.innerHTML = "";
     evaluatedContainer.innerHTML = "";
 
     if (error || !submissions || submissions.length === 0) {
-        container.innerHTML = `<p style="color:var(--text-muted);">No submissions found.</p>`;
-        evaluatedContainer.innerHTML = `<p style="color:var(--text-muted);">No evaluations found.</p>`;
+        container.innerHTML = `<p>No submissions found.</p>`;
+        evaluatedContainer.innerHTML = `<p>No evaluations found.</p>`;
         return;
     }
 
     submissions.forEach(sub => {
-        
+
+        const box = document.createElement("div");
         box.className = "assignment-box";
+
         box.innerHTML = `
             <strong>👤 ${sub.student_name}</strong>
-            <p class="meta">${sub.subject || 'Math'} — ${sub.title}</p>
-            <p class="meta" style="font-size:0.8em;">Status: <span style="color:var(--accent-cyan)">${sub.status}</span></p>
-            <button class="btn-view-pdf" onclick="window.open('${sub.file_url}','_blank')">📄 View Submission</button>
+            <p>${sub.subject || 'Math'} — ${sub.title}</p>
+            <p>Status: ${sub.status || "Pending"}</p>
+            <p>Marks: ${sub.total_marks ?? "Not graded"}</p>
+            <button onclick="window.open('${sub.file_url}','_blank')">
+                📄 View Submission
+            </button>
         `;
+
         container.appendChild(box);
 
-        if (sub.total_marks !== null || sub.ai_pdf_url) {
+       
+        if (sub.total_marks !== null) {
+
             const aiBox = document.createElement("div");
             aiBox.className = "assignment-box ai-highlight";
+
             aiBox.innerHTML = `
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; justify-content:space-between;">
                     <strong>🎓 ${sub.student_name}</strong>
-                    <span class="score-pill">${sub.total_marks ?? '0'}/100</span>
+                    <span class="score-pill">${sub.total_marks}/100</span>
                 </div>
-                <p class="meta">${sub.title}</p>
-                <p class="meta" style="font-style:italic; font-size:0.85em;">"${sub.ai_remark || 'No remarks provided'}"</p>
-                <button class="btn-ai-pdf" onclick="window.open('${sub.ai_pdf_url || sub.file_url}','_blank')">
-                    🤖 View Graded Answer PDF
+                <p>${sub.title}</p>
+                <p style="font-style:italic;">
+                    "${sub.ai_remark || 'No feedback'}"
+                </p>
+                <button class="btn-ai-pdf"
+                    onclick="window.open('${sub.file_url}','_blank')">
+                    🤖 View Graded PDF
                 </button>
             `;
+
             evaluatedContainer.appendChild(aiBox);
         }
     });
 }
+   
+    
 
     
     function togglePresent(index) { students[index].presentToday = !students[index].presentToday; }
